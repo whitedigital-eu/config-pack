@@ -1,0 +1,37 @@
+{
+    "name": "whitedigital-eu/php-cs-fixer-config",
+    "description": "PhpCsFixer configuration to use in other organization repositories",
+    "type": "library",
+    "keywords": [
+        "config",
+        "cs-fixer",
+        "php",
+        "php-cs-fixer",
+        "symfony"
+    ],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Davis Zalitis",
+            "email": "davis.zalitis@whitedigital.eu",
+            "homepage": "https://me.k0d3r1s.com"
+        }
+    ],
+    "require": {
+        "php": ">=8.1.0",
+    },
+    "require-dev": {
+        "friendsofphp/php-cs-fixer": "*"
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.x-dev"
+        },
+        "thanks": {
+            "name": "whitedigital-eu/php-cs-fixer-config",
+            "url": "https://github.com/whitedigital-eu/php-cs-fixer-config"
+        }
+    }
+}
