@@ -4,7 +4,7 @@ use PhpCsFixer\Config;
 use PhpCsFixer\Finder;
 
 $finder = Finder::create()
-    ->in(dirs: [__DIR__, ])
+    ->in(dirs: [getcwd(), ])
     ->exclude(dirs: ['vendor', 'var', '.github', ]);
 
 return (new Config())
