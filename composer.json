@@ -1,5 +1,5 @@
 {
-    "name": "whitedigital-eu/php-cs-fixer-config",
+    "name": "whitedigital-eu/config-pack",
     "description": "PhpCsFixer configuration to use in other organization repositories",
     "type": "library",
     "keywords": [
@@ -7,6 +7,7 @@
         "cs-fixer",
         "php",
         "php-cs-fixer",
+        "phpstan",
         "symfony"
     ],
     "license": "MIT",
@@ -18,10 +19,14 @@
         }
     ],
     "require": {
-        "php": ">=8.1.0"
-    },
-    "require-dev": {
-        "friendsofphp/php-cs-fixer": "*"
+        "php": ">=8.1.0",
+        "friendsofphp/php-cs-fixer": "*",
+        "phpstan/phpstan": "*",
+        "phpstan/phpstan-doctrine": "*",
+        "phpstan/phpstan-symfony": "*",
+        "phpunit/phpunit": ">=9.5",
+        "roave/security-advisories": "dev-latest",
+        "symfony/phpunit-bridge": "*"
     },
     "minimum-stability": "dev",
     "prefer-stable": true,
@@ -30,8 +35,8 @@
             "dev-main": "1.x-dev"
         },
         "thanks": {
-            "name": "whitedigital-eu/php-cs-fixer-config",
-            "url": "https://github.com/whitedigital-eu/php-cs-fixer-config"
+            "name": "whitedigital-eu/config-pack",
+            "url": "https://github.com/whitedigital-eu/config-pack"
         }
     }
 }
