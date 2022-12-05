@@ -5,5 +5,5 @@ parameters:
         - tests
         - config
 includes:
-    - vendor/phpstan/phpstan-doctrine/extension.neon
-    - vendor/phpstan/phpstan-symfony/extension.neon
+    - ../../phpstan/phpstan-doctrine/extension.neon
+    - ../../phpstan/phpstan-symfony/extension.neon
