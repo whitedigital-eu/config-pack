@@ -25,14 +25,13 @@
         "phpstan/phpstan-doctrine": "*",
         "phpstan/phpstan-symfony": "*",
         "phpunit/phpunit": ">=9.5",
-        "roave/security-advisories": "dev-latest",
-        "symfony/phpunit-bridge": "*"
+        "roave/security-advisories": "dev-latest"
     },
     "minimum-stability": "dev",
     "prefer-stable": true,
     "extra": {
         "branch-alias": {
-            "dev-main": "1.x-dev"
+            "dev-main": "2.x-dev"
         },
         "thanks": {
             "name": "whitedigital-eu/config-pack",
