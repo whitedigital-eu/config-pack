@@ -1,5 +1,13 @@
 # config-pack
 
+> **WARNING**  
+When upgrading from **v1** to **v2**, it is better to run `composer update` without scripts and plugins,
+as v2 does not require `symfony/phpunit-bridge` anymore and uninstalling it may change or delete
+test related files, like `.env.test` or `phpunit.xml.dist`:  
+> 
+>`composer update -nW --no-scripts --no-plugins whitedigital-eu/config-pack`
+---
+
 Installation
 ---
 
