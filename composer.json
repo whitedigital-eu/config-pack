@@ -24,8 +24,13 @@
         "phpstan/phpstan": "*",
         "phpstan/phpstan-doctrine": "*",
         "phpstan/phpstan-symfony": "*",
-        "phpunit/phpunit": ">=9.5",
+        "phpunit/phpunit": ">=10.0",
         "roave/security-advisories": "dev-latest"
+    },
+    "autoload": {
+        "psr-4": {
+            "WhiteDigital\\Config\\": "src/"
+        }
     },
     "minimum-stability": "dev",
     "prefer-stable": true,
