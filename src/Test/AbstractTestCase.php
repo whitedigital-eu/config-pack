@@ -8,6 +8,7 @@ use BackedEnum;
 use stdClass;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
+use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -22,8 +23,11 @@ use WhiteDigital\Config\Traits\FakerTrait;
 
 use function copy;
 use function dirname;
+use function getcwd;
+use function hash;
 use function json_decode;
 use function sprintf;
+use function sys_get_temp_dir;
 use function unlink;
 
 abstract class AbstractTestCase extends ApiTestCase
@@ -36,6 +40,15 @@ abstract class AbstractTestCase extends ApiTestCase
     protected static ?string $email;
     protected static ?stdClass $file = null;
     protected static bool $authenticate = true;
+    private static bool $init = false;
+
+    public static function setUpBeforeClass(): void
+    {
+        if (!self::$init) {
+            (new Filesystem())->remove([sys_get_temp_dir() . '/' . hash(algo: 'xxh128', data: getcwd()) . '/var/cache']);
+            self::$init = true;
+        }
+    }
 
     /**
      * @throws ClientExceptionInterface
