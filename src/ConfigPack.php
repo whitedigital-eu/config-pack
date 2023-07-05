@@ -37,10 +37,10 @@ class ConfigPack extends AbstractBundle
     {
         if ($depth <= $maxDepth) {
             foreach ($array as $key => $value) {
-                $key = ltrim(string: $base . '.' . $key, characters: '.');
+                $key = ltrim($base . '.' . $key, '.');
 
-                if (self::isAssociative(array: $value)) {
-                    $result = self::makeOneDimension(array: $value, base: $key, separator: $separator, onlyLast: $onlyLast, depth: $depth + 1, maxDepth: $maxDepth, result: $result);
+                if (self::isAssociative($value)) {
+                    $result = self::makeOneDimension($value, $key, $separator, $onlyLast, $depth + 1, $maxDepth, $result);
 
                     if ($onlyLast) {
                         continue;
@@ -56,10 +56,10 @@ class ConfigPack extends AbstractBundle
 
     private static function isAssociative(mixed $array): bool
     {
-        if (!is_array(value: $array) || [] === $array) {
+        if (!is_array($array) || [] === $array) {
             return false;
         }
 
-        return !array_is_list(array: $array);
+        return !array_is_list($array);
     }
 }

@@ -80,12 +80,12 @@ abstract class AbstractTestCase extends ApiTestCase
      * @throws ServerExceptionInterface
      * @throws TransportExceptionInterface
      */
-    protected function getResource(string $iri, ?int $key = null): array|object|null
+    protected static function getResource(string $iri, ?int $key = null): array|object|null
     {
-        $result = json_decode(self::$client->request(Request::METHOD_GET, $iri)->getContent())->{'hydra:member'};
+        $result = json_decode(self::$client->request(Request::METHOD_GET, $iri)->getContent())->{'hydra:member'} ?? [];
 
         if (null !== $key) {
-            return $result[$key];
+            return $result[$key] ?? null;
         }
 
         return $result;
@@ -97,7 +97,7 @@ abstract class AbstractTestCase extends ApiTestCase
      * @throws ServerExceptionInterface
      * @throws TransportExceptionInterface
      */
-    protected function uploadFile(?string $title = null, bool $skip = false)
+    protected static function uploadFile(?string $title = null, bool $skip = false)
     {
         if (null !== self::$file && !$skip) {
             return self::$file;
@@ -135,7 +135,7 @@ abstract class AbstractTestCase extends ApiTestCase
      * @throws DecodingExceptionInterface
      * @throws ClientExceptionInterface
      */
-    protected function assertData(array $data): void
+    protected static function assertData(array $data): void
     {
         foreach ($data as $key => $item) {
             if ($item instanceof BackedEnum) {
@@ -150,17 +150,20 @@ abstract class AbstractTestCase extends ApiTestCase
         }
     }
 
-    protected function post(array $data, ?string $iri = null, int $code = Response::HTTP_CREATED): stdClass
+    protected static function post(array $data, ?string $iri = null, int $code = Response::HTTP_CREATED, bool $assert = true): stdClass
     {
         $response = self::$client->request(Request::METHOD_POST, $iri ?? static::$iri, ['json' => $data]);
 
         self::assertResponseStatusCodeSame($code);
-        self::assertData($data);
+
+        if ($assert) {
+            self::assertData($data);
+        }
 
         return json_decode($response->getContent());
     }
 
-    protected function patch(mixed $id, array $data, ?string $iri = null, int $code = Response::HTTP_OK): stdClass
+    protected static function patch(mixed $id, array $data, ?string $iri = null, int $code = Response::HTTP_OK, bool $assert = true): stdClass
     {
         $response = self::$client->request(Request::METHOD_PATCH, sprintf('%s/%s', $iri ?? static::$iri, $id), [
             'json' => $data,
@@ -170,7 +173,10 @@ abstract class AbstractTestCase extends ApiTestCase
         ]);
 
         self::assertResponseStatusCodeSame($code);
-        self::assertData($data);
+
+        if ($assert) {
+            self::assertData($data);
+        }
 
         return json_decode($response->getContent());
     }
