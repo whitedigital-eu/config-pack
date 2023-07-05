@@ -5,6 +5,8 @@ namespace WhiteDigital\Config\Test;
 use ApiPlatform\Symfony\Bundle\Test\ApiTestCase;
 use App\Constants\Enum\Definition;
 use BackedEnum;
+use DateTimeImmutable;
+use DateTimeInterface;
 use stdClass;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
@@ -20,6 +22,7 @@ use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 use WhiteDigital\Config\Faker;
 use WhiteDigital\Config\Traits\FakerTrait;
+use WhiteDigital\EntityResourceMapper\UTCDateTimeImmutable;
 
 use function copy;
 use function dirname;
@@ -192,5 +195,15 @@ abstract class AbstractTestCase extends ApiTestCase
         }
 
         return json_decode($response->getContent());
+    }
+
+    protected static function datetimeFormat(null|UTCDateTimeImmutable|DateTimeImmutable $dt = null): string
+    {
+        return ($dt ?? new UTCDateTimeImmutable())->format(DateTimeInterface::RFC3339);
+    }
+
+    protected static function dateFormat(null|UTCDateTimeImmutable|DateTimeImmutable $dt = null): string
+    {
+        return self::datetimeFormat(($dt ?? new UTCDateTimeImmutable())->setTime(0, 0));
     }
 }
