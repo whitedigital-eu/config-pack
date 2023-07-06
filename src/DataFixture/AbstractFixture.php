@@ -3,14 +3,14 @@
 namespace WhiteDigital\Config\DataFixture;
 
 use BackedEnum;
+use Composer\InstalledVersions;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
+use LogicException;
 use Random\Randomizer;
-use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use WhiteDigital\Config\Faker;
 use WhiteDigital\Config\Traits\FakerTrait;
 use WhiteDigital\EntityResourceMapper\Entity\BaseEntity;
-use WhiteDigital\SiteTree\DataFixture\SiteTreeFixture;
 
 abstract class AbstractFixture extends Fixture implements DependentFixtureInterface
 {
@@ -18,9 +18,9 @@ abstract class AbstractFixture extends Fixture implements DependentFixtureInterf
 
     public static array $references;
 
-    public function __construct(ParameterBagInterface $bag)
+    public function __construct(Faker $faker)
     {
-        self::setFaker(new Faker(bag: $bag));
+        self::setFaker($faker);
     }
 
     public function getDependencies(): array
@@ -61,7 +61,11 @@ abstract class AbstractFixture extends Fixture implements DependentFixtureInterf
 
     protected function getNode(string $type): object
     {
-        return $this->getReference('node' . $type . $this->randomArrayKey(SiteTreeFixture::$references[$type]));
+        if (!InstalledVersions::isInstalled('whitedigital-eu/site-tree')) {
+            throw new LogicException('SiteTree is missing. Try running "composer require whitedigital-eu/site-tree".');
+        }
+
+        return $this->getReference('node' . $type . $this->randomArrayKey(\WhiteDigital\SiteTree\DataFixture\SiteTreeFixture::$references[$type]));
     }
 
     protected function getImage(): object

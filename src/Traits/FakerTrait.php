@@ -3,6 +3,7 @@
 namespace WhiteDigital\Config\Traits;
 
 use DateTime;
+use LogicException;
 use WhiteDigital\Config\Faker;
 
 use function method_exists;
@@ -144,6 +145,10 @@ trait FakerTrait
 
     public static function __callStatic(string $name, array $arguments)
     {
+        if (null === self::$faker) {
+            throw new LogicException(sprintf('%s not set, call setFaker(new Faker()) before using this', Faker::class));
+        }
+
         if (!method_exists(static::class, $name)) {
             return self::$faker::f()->{$name}(...$arguments);
         }

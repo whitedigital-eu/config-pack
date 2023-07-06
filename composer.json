@@ -20,12 +20,30 @@
     ],
     "require": {
         "php": ">=8.1.0",
+        "ext-random": "*",
+        "api-platform/core": "*",
+        "composer-runtime-api": ">=2.0.0",
+        "doctrine/data-fixtures": "*",
+        "doctrine/doctrine-fixtures-bundle": "*",
+        "doctrine/persistence": "*",
+        "fakerphp/faker": "*",
         "friendsofphp/php-cs-fixer": "*",
         "phpstan/phpstan": "*",
         "phpstan/phpstan-doctrine": "*",
         "phpstan/phpstan-symfony": "*",
         "phpunit/phpunit": ">=10.0",
-        "roave/security-advisories": "dev-latest"
+        "roave/security-advisories": "dev-latest",
+        "symfony/config": "*",
+        "symfony/dependency-injection": "*",
+        "symfony/framework-bundle": "*",
+        "symfony/http-client": "*",
+        "symfony/http-foundation": "*",
+        "symfony/http-kernel": "*",
+        "whitedigital-eu/entity-resource-mapper-bundle": "*",
+        "whitedigital-eu/storage-item-resource": "*"
+    },
+    "suggest": {
+        "whitedigital-eu/site-tree": "*"
     },
     "autoload": {
         "psr-4": {
@@ -36,7 +54,7 @@
     "prefer-stable": true,
     "extra": {
         "branch-alias": {
-            "dev-main": "2.x-dev"
+            "dev-main": "2.2.x-dev"
         },
         "thanks": {
             "name": "whitedigital-eu/config-pack",

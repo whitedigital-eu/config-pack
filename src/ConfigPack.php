@@ -19,6 +19,7 @@ class ConfigPack extends AbstractBundle
             ->addDefaultsIfNotSet()
                 ->children()
                     ->scalarNode('login_email')->defaultNull()->end()
+                    ->scalarNode('login_password')->defaultNull()->end()
                     ->scalarNode('locale')->defaultValue('lv_LV')->end()
                     ->integerNode('seed')->defaultValue(2022)->end()
                 ->end();

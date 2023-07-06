@@ -3,13 +3,11 @@
 namespace WhiteDigital\Config\Test;
 
 use ApiPlatform\Symfony\Bundle\Test\ApiTestCase;
-use App\Constants\Enum\Definition;
 use BackedEnum;
 use DateTimeImmutable;
 use DateTimeInterface;
 use stdClass;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
@@ -41,6 +39,7 @@ abstract class AbstractTestCase extends ApiTestCase
     protected static HttpClientInterface $client;
     protected static string $iri;
     protected static ?string $email;
+    protected static ?string $password;
     protected static ?stdClass $file = null;
     protected static bool $authenticate = true;
     private static bool $init = false;
@@ -63,22 +62,23 @@ abstract class AbstractTestCase extends ApiTestCase
     {
         self::$client = static::createClient();
         self::$email = (self::$container = self::getContainer())->getParameter('whitedigital.test.login_email');
+        self::$password = (self::$container = self::getContainer())->getParameter('whitedigital.test.login_password');
 
         if (self::$authenticate) {
             self::authenticate();
         }
 
-        self::setFaker(new Faker(bag: self::$container->get(ParameterBagInterface::class)));
+        self::setFaker(self::$container->get(Faker::class));
     }
 
     /**
      * @throws TransportExceptionInterface
      */
-    protected static function authenticate(?string $email = null, string $password = 'secret'): void
+    protected static function authenticate(?string $email = null, ?string $password = null): void
     {
         self::$client->request(Request::METHOD_POST, '/api/users/login', ['json' => [
             'email' => $email ?? self::$email,
-            'password' => $password,
+            'password' => $password ?? self::$password,
         ]]);
     }
 
@@ -136,7 +136,7 @@ abstract class AbstractTestCase extends ApiTestCase
 
         $response = self::$client->request(Request::METHOD_POST, '/api/storage_items', [
             'headers' => [
-                'Content-Type' => Definition::TYPE_MULTIPART_FORM->value,
+                'Content-Type' => 'multipart/form-data',
             ],
             'extra' => $extra,
         ]);

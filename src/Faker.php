@@ -10,15 +10,10 @@ final class Faker
 {
     private static Generator $factory;
 
-    public function __construct(?string $locale = 'lv_LV', ?int $seed = 2022, ?ParameterBagInterface $bag = null)
+    public function __construct(ParameterBagInterface $bag)
     {
-        if (null !== $bag) {
-            $locale = $bag->get('whitedigital.test.locale');
-            $seed = $bag->get('whitedigital.test.seed');
-        }
-
-        self::$factory = Factory::create($locale);
-        self::$factory->seed($seed);
+        self::$factory = Factory::create($bag->get('whitedigital.test.locale'));
+        self::$factory->seed($bag->get('whitedigital.test.seed'));
     }
 
     public static function f(): Generator
