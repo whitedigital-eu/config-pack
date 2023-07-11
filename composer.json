@@ -19,7 +19,7 @@
         }
     ],
     "require": {
-        "php": ">=8.1.0",
+        "php": ">=8.2.0",
         "ext-random": "*",
         "api-platform/core": "*",
         "composer-runtime-api": ">=2.0.0",

@@ -14,7 +14,7 @@ class BaseClassifierFixture extends Fixture
     public static array $references;
     public static int $i = 0;
 
-    public function __construct(private ?string $classifierEntityClass = null)
+    public function __construct(private readonly ?string $classifierEntityClass = null)
     {
     }
 
