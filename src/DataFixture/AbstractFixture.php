@@ -51,12 +51,20 @@ abstract class AbstractFixture extends Fixture implements DependentFixtureInterf
      */
     protected function getEntity(string $fixture, ?int $i = null): ?object
     {
-        $key = (static::$references[$fixture][$this->randomArrayKey(static::$references[$fixture])] ?? $i) ?? null;
+        $key = (static::$references[$fixture][$i ?? $this->randomArrayKey(static::$references[$fixture])] ?? null) ?? null;
 
         return match ($key) {
             null => null,
             default => $this->getReference($key),
         };
+    }
+
+    /**
+     * @return BaseEntity[]
+     */
+    protected function getEntityReferences(string $fixture): array
+    {
+        return static::$references[$fixture] ?? [];
     }
 
     protected function getNode(string $type): object
