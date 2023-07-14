@@ -6,6 +6,7 @@ use ApiPlatform\Symfony\Bundle\Test\ApiTestCase;
 use BackedEnum;
 use DateTimeImmutable;
 use DateTimeInterface;
+use Exception;
 use stdClass;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Filesystem\Filesystem;
@@ -23,10 +24,12 @@ use WhiteDigital\Config\Traits\FakerTrait;
 use WhiteDigital\EntityResourceMapper\UTCDateTimeImmutable;
 
 use function copy;
+use function count;
 use function dirname;
 use function getcwd;
 use function hash;
 use function json_decode;
+use function random_int;
 use function sprintf;
 use function sys_get_temp_dir;
 use function unlink;
@@ -99,6 +102,14 @@ abstract class AbstractTestCase extends ApiTestCase
     protected static function getResource(string $iri, ?int $key = null): array|object|null
     {
         $result = json_decode(self::$client->request(Request::METHOD_GET, $iri)->getContent())->{'hydra:member'} ?? [];
+
+        try {
+            if (-1 === $key) {
+                return $result[random_int(0, count($result) - 1)] ?? null;
+            }
+        } catch (Exception) {
+            $key = 0;
+        }
 
         if (null !== $key) {
             return $result[$key] ?? null;
