@@ -144,6 +144,7 @@ abstract class AbstractTestCase extends ApiTestCase
 
         if (null !== $title) {
             $extra['parameters']['title'] = $title;
+            $extra['parameters']['altText'] = $title;
         }
 
         $response = self::$client->request(Request::METHOD_POST, '/api/storage_items', [
