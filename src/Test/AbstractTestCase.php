@@ -177,7 +177,7 @@ abstract class AbstractTestCase extends ApiTestCase
         }
     }
 
-    protected static function post(array $data, ?string $iri = null, int $code = Response::HTTP_CREATED, bool $assert = true): stdClass
+    protected static function post(array $data, ?string $iri = null, int $code = Response::HTTP_CREATED, bool $assert = true, bool $return = true): ?stdClass
     {
         $response = self::$client->request(Request::METHOD_POST, $iri ?? static::$iri, ['json' => $data]);
 
@@ -187,10 +187,10 @@ abstract class AbstractTestCase extends ApiTestCase
             self::assertData($data);
         }
 
-        return json_decode($response->getContent());
+        return $return ? json_decode($response->getContent()) : null;
     }
 
-    protected static function patch(mixed $id, array $data, ?string $iri = null, int $code = Response::HTTP_OK, bool $assert = true): stdClass
+    protected static function patch(mixed $id, array $data, ?string $iri = null, int $code = Response::HTTP_OK, bool $assert = true, bool $return = true): ?stdClass
     {
         $response = self::$client->request(Request::METHOD_PATCH, sprintf('%s/%s', $iri ?? static::$iri, $id), [
             'json' => $data,
@@ -201,11 +201,7 @@ abstract class AbstractTestCase extends ApiTestCase
 
         self::assertResponseStatusCodeSame($code);
 
-        if ($assert) {
-            self::assertData($data);
-        }
-
-        return json_decode($response->getContent());
+        return $return ? json_decode($response->getContent()) : null;
     }
 
     protected static function datetimeFormat(null|UTCDateTimeImmutable|DateTimeImmutable $dt = null): string
