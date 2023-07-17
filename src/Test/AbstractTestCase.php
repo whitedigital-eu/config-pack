@@ -60,6 +60,7 @@ abstract class AbstractTestCase extends ApiTestCase
      * @throws RedirectionExceptionInterface
      * @throws ServerExceptionInterface
      * @throws TransportExceptionInterface
+     * @throws Exception
      */
     protected function setUp(): void
     {
@@ -177,6 +178,13 @@ abstract class AbstractTestCase extends ApiTestCase
         }
     }
 
+    /**
+     * @throws RedirectionExceptionInterface
+     * @throws DecodingExceptionInterface
+     * @throws ClientExceptionInterface
+     * @throws TransportExceptionInterface
+     * @throws ServerExceptionInterface
+     */
     protected static function post(array $data, ?string $iri = null, int $code = Response::HTTP_CREATED, bool $assert = true, bool $return = true): ?stdClass
     {
         $response = self::$client->request(Request::METHOD_POST, $iri ?? static::$iri, ['json' => $data]);
@@ -190,6 +198,13 @@ abstract class AbstractTestCase extends ApiTestCase
         return $return ? json_decode($response->getContent()) : null;
     }
 
+    /**
+     * @throws TransportExceptionInterface
+     * @throws ServerExceptionInterface
+     * @throws RedirectionExceptionInterface
+     * @throws ClientExceptionInterface
+     * @throws DecodingExceptionInterface
+     */
     protected static function patch(mixed $id, array $data, ?string $iri = null, int $code = Response::HTTP_OK, bool $assert = true, bool $return = true): ?stdClass
     {
         $response = self::$client->request(Request::METHOD_PATCH, sprintf('%s/%s', $iri ?? static::$iri, $id), [
@@ -200,6 +215,10 @@ abstract class AbstractTestCase extends ApiTestCase
         ]);
 
         self::assertResponseStatusCodeSame($code);
+
+        if ($assert) {
+            self::assertData($data);
+        }
 
         return $return ? json_decode($response->getContent()) : null;
     }
