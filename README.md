@@ -283,8 +283,8 @@ class ClassifierFixture extends BaseClassifierFixture
     public function load(ObjectManager $manager): void
     {
         $classifiers = [
-            ['classifier' => ClassifierType::ONE, 'data' => ['data' => 'one']],
-            ['classifier' => ClassifierType::TWO, 'data' => ['data' => 'two']],
+            'ONE' => ['classifier' => ClassifierType::ONE, 'data' => ['data' => 'one']],
+            'TWO' => ['classifier' => ClassifierType::TWO, 'data' => ['data' => 'two']],
         ];
 
         $this->loadFixtures($manager, $classifiers);
