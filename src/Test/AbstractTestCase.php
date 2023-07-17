@@ -23,6 +23,7 @@ use WhiteDigital\Config\Faker;
 use WhiteDigital\Config\Traits\FakerTrait;
 use WhiteDigital\EntityResourceMapper\UTCDateTimeImmutable;
 
+use function array_slice;
 use function copy;
 use function count;
 use function dirname;
@@ -114,6 +115,28 @@ abstract class AbstractTestCase extends ApiTestCase
 
         if (null !== $key) {
             return $result[$key] ?? null;
+        }
+
+        return $result;
+    }
+
+    /**
+     * @throws TransportExceptionInterface
+     * @throws ServerExceptionInterface
+     * @throws RedirectionExceptionInterface
+     * @throws ClientExceptionInterface
+     */
+    protected function getResourcesAsArray(string $iri, ?int $max = null): array
+    {
+        $resources = self::getResource($iri);
+
+        $result = [];
+        foreach ($resources as $resource) {
+            $result[] = $resource->{'@id'};
+        }
+
+        if (null !== $max) {
+            return array_slice($result, 0, $max);
         }
 
         return $result;
