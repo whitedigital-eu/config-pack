@@ -100,7 +100,7 @@ abstract class AbstractTestCase extends ApiTestCase
      * @throws ServerExceptionInterface
      * @throws TransportExceptionInterface
      */
-    protected static function getResource(string $iri, ?int $key = null, ?int $max = null, bool $asIri = true, bool $isSingle = false): array|object|null
+    protected static function getResource(string $iri, ?int $key = null, ?int $max = null, bool $asIri = true, bool $isSingle = false): mixed
     {
         $response = json_decode(self::$client->request(Request::METHOD_GET, $iri)->getContent());
 
