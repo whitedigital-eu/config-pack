@@ -7,14 +7,14 @@ use Composer\InstalledVersions;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use LogicException;
-use Random\Randomizer;
 use WhiteDigital\Config\Faker;
-use WhiteDigital\Config\Traits\FakerTrait;
+use WhiteDigital\Config\Traits;
 use WhiteDigital\EntityResourceMapper\Entity\BaseEntity;
 
 abstract class AbstractFixture extends Fixture implements DependentFixtureInterface
 {
-    use FakerTrait;
+    use Traits\Common;
+    use Traits\FakerTrait;
 
     public static array $references;
 
@@ -41,17 +41,12 @@ abstract class AbstractFixture extends Fixture implements DependentFixtureInterf
         self::$references[$fixture::class][] = $name;
     }
 
-    protected function randomArrayKey(array $array): mixed
-    {
-        return (new Randomizer())->pickArrayKeys(array: $array, num: 1)[0];
-    }
-
     /**
      * @return BaseEntity|null
      */
     protected function getEntity(string $fixture, ?int $i = null): ?object
     {
-        $key = (static::$references[$fixture][$i ?? $this->randomArrayKey(static::$references[$fixture])] ?? null) ?? null;
+        $key = (static::$references[$fixture][$i ?? self::randomArrayKey(static::$references[$fixture])] ?? null) ?? null;
 
         return match ($key) {
             null => null,
@@ -67,13 +62,14 @@ abstract class AbstractFixture extends Fixture implements DependentFixtureInterf
         return static::$references[$fixture] ?? [];
     }
 
+    /** @noinspection PhpFullyQualifiedNameUsageInspection */
     protected function getNode(string $type): object
     {
         if (!InstalledVersions::isInstalled('whitedigital-eu/site-tree')) {
             throw new LogicException('SiteTree is missing. Try running "composer require whitedigital-eu/site-tree".');
         }
 
-        return $this->getReference('node' . $type . $this->randomArrayKey(\WhiteDigital\SiteTree\DataFixture\SiteTreeFixture::$references[$type]));
+        return $this->getReference('node' . $type . self::randomArrayKey(\WhiteDigital\SiteTree\DataFixture\SiteTreeFixture::$references[$type]));
     }
 
     protected function getImage(): object
@@ -91,6 +87,6 @@ abstract class AbstractFixture extends Fixture implements DependentFixtureInterf
      */
     protected function getClassifier(BackedEnum $type): object
     {
-        return $this->getReference(($values = BaseClassifierFixture::$references[BaseClassifierFixture::class][$type->name])[$this->randomArrayKey($values)]);
+        return $this->getReference(($values = BaseClassifierFixture::$references[BaseClassifierFixture::class][$type->name])[self::randomArrayKey($values)]);
     }
 }

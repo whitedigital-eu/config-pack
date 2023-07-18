@@ -20,24 +20,23 @@ use Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 use WhiteDigital\Config\Faker;
-use WhiteDigital\Config\Traits\FakerTrait;
+use WhiteDigital\Config\Traits;
 use WhiteDigital\EntityResourceMapper\UTCDateTimeImmutable;
 
 use function array_slice;
 use function copy;
-use function count;
 use function dirname;
 use function getcwd;
 use function hash;
 use function json_decode;
-use function random_int;
 use function sprintf;
 use function sys_get_temp_dir;
 use function unlink;
 
 abstract class AbstractTestCase extends ApiTestCase
 {
-    use FakerTrait;
+    use Traits\Common;
+    use Traits\FakerTrait;
 
     protected static ContainerInterface $container;
     protected static HttpClientInterface $client;
@@ -101,13 +100,19 @@ abstract class AbstractTestCase extends ApiTestCase
      * @throws ServerExceptionInterface
      * @throws TransportExceptionInterface
      */
-    protected static function getResource(string $iri, ?int $key = null): array|object|null
+    protected static function getResource(string $iri, ?int $key = null, ?int $max = null, bool $asIri = true, bool $isSingle = false): array|object|null
     {
+        $response = json_decode(self::$client->request(Request::METHOD_GET, $iri)->getContent());
+
+        if ($isSingle) {
+            return $response;
+        }
+
         $result = json_decode(self::$client->request(Request::METHOD_GET, $iri)->getContent())->{'hydra:member'} ?? [];
 
         try {
             if (-1 === $key) {
-                return $result[random_int(0, count($result) - 1)] ?? null;
+                return self::randomArrayKey($result);
             }
         } catch (Exception) {
             $key = 0;
@@ -117,29 +122,20 @@ abstract class AbstractTestCase extends ApiTestCase
             return $result[$key] ?? null;
         }
 
-        return $result;
-    }
-
-    /**
-     * @throws TransportExceptionInterface
-     * @throws ServerExceptionInterface
-     * @throws RedirectionExceptionInterface
-     * @throws ClientExceptionInterface
-     */
-    protected function getResourcesAsArray(string $iri, ?int $max = null): array
-    {
-        $resources = self::getResource($iri);
-
-        $result = [];
-        foreach ($resources as $resource) {
-            $result[] = $resource->{'@id'};
-        }
-
         if (null !== $max) {
-            return array_slice($result, 0, $max);
+            $result = array_slice($result, 0, $max);
         }
 
-        return $result;
+        if (!$asIri) {
+            return $result;
+        }
+
+        $iris = [];
+        foreach ($result as $item) {
+            $iris[] = $item->{'@id'};
+        }
+
+        return $iris;
     }
 
     /**
