@@ -112,7 +112,7 @@ abstract class AbstractTestCase extends ApiTestCase
 
         try {
             if (-1 === $key) {
-                return self::randomArrayKey($result);
+                return $result[self::randomArrayKey($result)];
             }
         } catch (Exception) {
             $key = 0;
