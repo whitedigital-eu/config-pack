@@ -28,10 +28,14 @@ use function copy;
 use function dirname;
 use function getcwd;
 use function hash;
+use function in_array;
 use function json_decode;
+use function sort;
 use function sprintf;
 use function sys_get_temp_dir;
 use function unlink;
+
+use const SORT_NATURAL;
 
 abstract class AbstractTestCase extends ApiTestCase
 {
@@ -99,16 +103,23 @@ abstract class AbstractTestCase extends ApiTestCase
      * @throws RedirectionExceptionInterface
      * @throws ServerExceptionInterface
      * @throws TransportExceptionInterface
+     * @throws DecodingExceptionInterface
      */
-    protected static function getResource(string $iri, ?int $key = null, ?int $max = null, bool $asIri = true, bool $isSingle = false): mixed
+    protected static function getResource(?string $iri = null, ?int $key = null, ?int $max = null, bool $asIri = true, bool $isSingle = false, bool $assert = false): mixed
     {
+        $iri ??= static::$iri;
         $response = json_decode(self::$client->request(Request::METHOD_GET, $iri)->getContent());
+
+        self::assertResponseIsSuccessful();
+        if ($assert) {
+            self::assertJsonContains(['@id' => $iri]);
+        }
 
         if ($isSingle) {
             return $response;
         }
 
-        $result = json_decode(self::$client->request(Request::METHOD_GET, $iri)->getContent())->{'hydra:member'} ?? [];
+        $result = $response->{'hydra:member'} ?? [];
 
         try {
             if (-1 === $key) {
@@ -134,6 +145,7 @@ abstract class AbstractTestCase extends ApiTestCase
         foreach ($result as $item) {
             $iris[] = $item->{'@id'};
         }
+        sort($iris, SORT_NATURAL);
 
         return $iris;
     }
@@ -173,6 +185,8 @@ abstract class AbstractTestCase extends ApiTestCase
             'extra' => $extra,
         ]);
 
+        self::assertResponseIsSuccessful();
+
         return self::$file = json_decode($response->getContent());
     }
 
@@ -190,7 +204,7 @@ abstract class AbstractTestCase extends ApiTestCase
                 $item = $item->value;
             }
 
-            if ('position' === $key || null === $item) {
+            if (null === $item || in_array($key, ['position', 'newPassword', 'newPasswordRepeat'], true)) {
                 continue;
             }
 
