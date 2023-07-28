@@ -3,15 +3,16 @@
 namespace WhiteDigital\Config\Traits;
 
 use DateTime;
+use DateTimeZone;
 use LogicException;
 use WhiteDigital\Config\Faker;
+use WhiteDigital\EntityResourceMapper\UTCDateTimeImmutable;
 
 use function method_exists;
 use function sprintf;
 
 /**
  * @method DateTime        creditCardExpirationDate($valid = true)
- * @method DateTime        dateTime($max = 'now', $timezone = null)
  * @method DateTime        dateTimeAD($max = 'now', $timezone = null)
  * @method DateTime        dateTimeBetween($startDate = '-30 years', $endDate = 'now', $timezone = null)
  * @method DateTime        dateTimeInInterval($date = '-30 years', $interval = '+5 days', $timezone = null)
@@ -174,5 +175,10 @@ trait FakerTrait
     public static function word(): string
     {
         return self::words(1);
+    }
+
+    public function dateTime(mixed $max = 'now', ?DateTimeZone $timezone = null): UTCDateTimeImmutable
+    {
+        return UTCDateTimeImmutable::createFromInterface(self::$faker::f()->dateTime($max, $timezone));
     }
 }
