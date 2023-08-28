@@ -23,6 +23,6 @@ trait GetItem
     #[Depends('testPatchItem')]
     public function testGetItem(int $id): int
     {
-        return self::getResource(sprintf('%s/%d', self::$iri, $id), isSingle: true, assert: true)->id;
+        return self::get(sprintf('%s/%d', self::$iri, $id), isSingle: true, assert: true)->id;
     }
 }

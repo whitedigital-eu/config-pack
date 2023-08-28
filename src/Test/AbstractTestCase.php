@@ -26,6 +26,7 @@ use WhiteDigital\EntityResourceMapper\UTCDateTimeImmutable;
 use function array_slice;
 use function copy;
 use function dirname;
+use function func_get_args;
 use function getcwd;
 use function hash;
 use function in_array;
@@ -105,7 +106,7 @@ abstract class AbstractTestCase extends ApiTestCase
      * @throws TransportExceptionInterface
      * @throws DecodingExceptionInterface
      */
-    protected static function getResource(?string $iri = null, ?int $key = null, ?int $max = null, bool $asIri = true, bool $isSingle = false, bool $assert = false): mixed
+    protected static function get(?string $iri = null, ?int $key = null, ?int $max = null, bool $asIri = true, bool $isSingle = false, bool $assert = false): mixed
     {
         $iri ??= static::$iri;
         $response = json_decode(self::$client->request(Request::METHOD_GET, $iri)->getContent());
@@ -155,6 +156,20 @@ abstract class AbstractTestCase extends ApiTestCase
      * @throws RedirectionExceptionInterface
      * @throws ServerExceptionInterface
      * @throws TransportExceptionInterface
+     * @throws DecodingExceptionInterface
+     *
+     * @deprecated Use get() instead
+     */
+    protected static function getResource(?string $iri = null, ?int $key = null, ?int $max = null, bool $asIri = true, bool $isSingle = false, bool $assert = false): mixed
+    {
+        return self::get(...func_get_args());
+    }
+
+    /**
+     * @throws ClientExceptionInterface
+     * @throws RedirectionExceptionInterface
+     * @throws ServerExceptionInterface
+     * @throws TransportExceptionInterface
      */
     protected static function uploadFile(?string $title = null, bool $skip = false)
     {
@@ -197,14 +212,16 @@ abstract class AbstractTestCase extends ApiTestCase
      * @throws DecodingExceptionInterface
      * @throws ClientExceptionInterface
      */
-    protected static function assertData(array $data): void
+    protected static function assertData(array $data, array $excludes = []): void
     {
+        $excludes = [] === $excludes ? ['position', 'newPassword', 'newPasswordRepeat'] : $excludes;
+
         foreach ($data as $key => $item) {
             if ($item instanceof BackedEnum) {
                 $item = $item->value;
             }
 
-            if (null === $item || in_array($key, ['position', 'newPassword', 'newPasswordRepeat'], true)) {
+            if (null === $item || in_array($key, $excludes, true)) {
                 continue;
             }
 
@@ -219,14 +236,14 @@ abstract class AbstractTestCase extends ApiTestCase
      * @throws TransportExceptionInterface
      * @throws ServerExceptionInterface
      */
-    protected static function post(array $data, ?string $iri = null, int $code = Response::HTTP_CREATED, bool $assert = true, bool $return = true): ?stdClass
+    protected static function post(array $data, ?string $iri = null, int $code = Response::HTTP_CREATED, bool $assert = true, bool $return = true, array $excludes = []): ?stdClass
     {
         $response = self::$client->request(Request::METHOD_POST, $iri ?? static::$iri, ['json' => $data]);
 
         self::assertResponseStatusCodeSame($code);
 
         if ($assert) {
-            self::assertData($data);
+            self::assertData($data, $excludes);
         }
 
         return $return ? json_decode($response->getContent()) : null;
@@ -239,7 +256,7 @@ abstract class AbstractTestCase extends ApiTestCase
      * @throws ClientExceptionInterface
      * @throws DecodingExceptionInterface
      */
-    protected static function patch(mixed $id, array $data, ?string $iri = null, int $code = Response::HTTP_OK, bool $assert = true, bool $return = true): ?stdClass
+    protected static function patch(mixed $id, array $data, ?string $iri = null, int $code = Response::HTTP_OK, bool $assert = true, bool $return = true, array $excludes = []): ?stdClass
     {
         $response = self::$client->request(Request::METHOD_PATCH, sprintf('%s/%s', $iri ?? static::$iri, $id), [
             'json' => $data,
@@ -251,10 +268,20 @@ abstract class AbstractTestCase extends ApiTestCase
         self::assertResponseStatusCodeSame($code);
 
         if ($assert) {
-            self::assertData($data);
+            self::assertData($data, $excludes);
         }
 
         return $return ? json_decode($response->getContent()) : null;
+    }
+
+    /**
+     * @throws TransportExceptionInterface
+     */
+    protected static function delete(mixed $id, ?string $iri = null, int $code = Response::HTTP_NO_CONTENT): void
+    {
+        self::$client->request(Request::METHOD_DELETE, sprintf('%s/%d', $iri ?? static::$iri, $id));
+
+        self::assertResponseStatusCodeSame($code);
     }
 
     protected static function datetimeFormat(null|UTCDateTimeImmutable|DateTimeImmutable $dt = null): string

@@ -19,6 +19,6 @@ trait GetCollection
      */
     public function testGetCollection(): array
     {
-        return self::getResource(asIri: false, assert: true);
+        return self::get(asIri: false, assert: true);
     }
 }
