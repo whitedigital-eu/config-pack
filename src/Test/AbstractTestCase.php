@@ -279,7 +279,7 @@ abstract class AbstractTestCase extends ApiTestCase
      */
     protected static function delete(mixed $id, ?string $iri = null, int $code = Response::HTTP_NO_CONTENT): void
     {
-        self::$client->request(Request::METHOD_DELETE, sprintf('%s/%d', $iri ?? static::$iri, $id));
+        self::$client->request(Request::METHOD_DELETE, sprintf('%s/%s', $iri ?? static::$iri, $id));
 
         self::assertResponseStatusCodeSame($code);
     }
