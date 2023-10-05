@@ -21,8 +21,8 @@ trait GetItem
      * @throws TransportExceptionInterface
      */
     #[Depends('testPatchItem')]
-    public function testGetItem(int $id): int
+    public function testGetItem(int|string $id): int|string
     {
-        return self::get(sprintf('%s/%d', self::$iri, $id), isSingle: true, assert: true)->id;
+        return self::get(sprintf('%s/%s', self::$iri, $id), isSingle: true, assert: true)->id;
     }
 }

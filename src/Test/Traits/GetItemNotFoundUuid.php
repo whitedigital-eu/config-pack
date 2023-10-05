@@ -2,13 +2,16 @@
 
 namespace WhiteDigital\Config\Test\Traits;
 
-use PHPUnit\Framework\Attributes\Depends;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 
-trait DeleteItem
+use function sprintf;
+
+trait GetItemNotFoundUuid
 {
     /**
      * @throws ClientExceptionInterface
@@ -16,9 +19,10 @@ trait DeleteItem
      * @throws ServerExceptionInterface
      * @throws TransportExceptionInterface
      */
-    #[Depends('testGetItem')]
-    public function testDeleteItem(int|string $id): void
+    public function testGetItemNotFoundUuid(): void
     {
-        self::delete($id);
+        self::$client->request(Request::METHOD_GET, sprintf('%s/%s', self::$iri, self::uuid()));
+
+        self::assertResponseStatusCodeSame(Response::HTTP_NOT_FOUND);
     }
 }
