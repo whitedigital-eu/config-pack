@@ -2,15 +2,18 @@
 
 namespace WhiteDigital\Config\DataFixture;
 
-use BackedEnum;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
-use Random\Randomizer;
+use WhiteDigital\Config\DataFixture\Traits\CommonFixture;
+use WhiteDigital\Config\Traits;
 
 use function is_array;
 
 class BaseClassifierFixture extends Fixture
 {
+    use CommonFixture;
+    use Traits\Common;
+
     public static array $references;
     public static int $i = 0;
 
@@ -40,23 +43,5 @@ class BaseClassifierFixture extends Fixture
             self::$references[self::class][$classifier->name][] = __CLASS__ . self::$i;
             self::$i++;
         }
-    }
-
-    /**
-     * @return BackedEnum
-     */
-    protected function getClassifier(BackedEnum $type): object
-    {
-        return $this->getReference(($values = self::$references[self::class][$type->name])[$this->randomArrayKey($values)]);
-    }
-
-    protected function getClassifierReferences(BackedEnum $type): array
-    {
-        return self::$references[self::class][$type->name] ?? [];
-    }
-
-    protected function randomArrayKey(array $array): mixed
-    {
-        return (new Randomizer())->pickArrayKeys(array: $array, num: 1)[0];
     }
 }

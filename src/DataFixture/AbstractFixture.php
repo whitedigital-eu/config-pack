@@ -2,17 +2,18 @@
 
 namespace WhiteDigital\Config\DataFixture;
 
-use BackedEnum;
 use Composer\InstalledVersions;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use LogicException;
+use WhiteDigital\Config\DataFixture\Traits\CommonFixture;
 use WhiteDigital\Config\Faker;
 use WhiteDigital\Config\Traits;
 use WhiteDigital\EntityResourceMapper\Entity\BaseEntity;
 
 abstract class AbstractFixture extends Fixture implements DependentFixtureInterface
 {
+    use CommonFixture;
     use Traits\Common;
     use Traits\FakerTrait;
 
@@ -80,18 +81,5 @@ abstract class AbstractFixture extends Fixture implements DependentFixtureInterf
     protected function getFile(): object
     {
         return $this->getReference('wdFile_text');
-    }
-
-    /**
-     * @return BackedEnum
-     */
-    protected function getClassifier(BackedEnum $type): object
-    {
-        return $this->getReference(($values = BaseClassifierFixture::$references[BaseClassifierFixture::class][$type->name])[self::randomArrayKey($values)]);
-    }
-
-    protected function getClassifierReferences(BackedEnum $type): array
-    {
-        return BaseClassifierFixture::$references[BaseClassifierFixture::class][$type->name] ?? [];
     }
 }
