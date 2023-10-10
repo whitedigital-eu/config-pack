@@ -89,4 +89,9 @@ abstract class AbstractFixture extends Fixture implements DependentFixtureInterf
     {
         return $this->getReference(($values = BaseClassifierFixture::$references[BaseClassifierFixture::class][$type->name])[self::randomArrayKey($values)]);
     }
+
+    protected function getClassifierReferences(BackedEnum $type): array
+    {
+        return BaseClassifierFixture::$references[BaseClassifierFixture::class][$type->name] ?? [];
+    }
 }

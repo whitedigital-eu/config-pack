@@ -47,7 +47,12 @@ class BaseClassifierFixture extends Fixture
      */
     protected function getClassifier(BackedEnum $type): object
     {
-        return $this->getReference(($values = static::$references[static::class][$type->name])[$this->randomArrayKey($values)]);
+        return $this->getReference(($values = self::$references[self::class][$type->name])[$this->randomArrayKey($values)]);
+    }
+
+    protected function getClassifierReferences(BackedEnum $type): array
+    {
+        return self::$references[self::class][$type->name] ?? [];
     }
 
     protected function randomArrayKey(array $array): mixed
