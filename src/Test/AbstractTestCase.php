@@ -284,12 +284,12 @@ abstract class AbstractTestCase extends ApiTestCase
         self::assertResponseStatusCodeSame($code);
     }
 
-    protected static function datetimeFormat(null|UTCDateTimeImmutable|DateTimeImmutable $dt = null): string
+    protected static function datetimeFormat(UTCDateTimeImmutable|DateTimeImmutable|null $dt = null): string
     {
         return ($dt ?? new UTCDateTimeImmutable())->format(DateTimeInterface::RFC3339);
     }
 
-    protected static function dateFormat(null|UTCDateTimeImmutable|DateTimeImmutable $dt = null): string
+    protected static function dateFormat(UTCDateTimeImmutable|DateTimeImmutable|null $dt = null): string
     {
         return self::datetimeFormat(($dt ?? new UTCDateTimeImmutable())->setTime(0, 0));
     }

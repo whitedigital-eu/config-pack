@@ -2,6 +2,7 @@
 
 namespace WhiteDigital\Config\DataFixture\Traits;
 
+use App\Entity\Classifier; // Make sure it exists
 use BackedEnum;
 use InvalidArgumentException;
 use WhiteDigital\Config\DataFixture\BaseClassifierFixture;
@@ -20,7 +21,7 @@ trait CommonFixture
             throw new InvalidArgumentException(sprintf('Key %d not found in %s', $key, $type->name));
         }
 
-        return $this->getReference($ref);
+        return $this->getReference($ref, Classifier::class);
     }
 
     protected function getClassifierReferences(BackedEnum $type): array

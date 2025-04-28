@@ -10,6 +10,9 @@ use WhiteDigital\Config\DataFixture\Traits\CommonFixture;
 use WhiteDigital\Config\Faker;
 use WhiteDigital\Config\Traits;
 use WhiteDigital\EntityResourceMapper\Entity\BaseEntity;
+use WhiteDigital\SiteTree\DataFixture\SiteTreeFixture;
+use WhiteDigital\SiteTree\Entity\SiteTree;
+use WhiteDigital\StorageItemResource\Entity\StorageItem;
 
 abstract class AbstractFixture extends Fixture implements DependentFixtureInterface
 {
@@ -51,7 +54,7 @@ abstract class AbstractFixture extends Fixture implements DependentFixtureInterf
 
         return match ($key) {
             null => null,
-            default => $this->getReference($key),
+            default => $this->getReference($key, $fixture),
         };
     }
 
@@ -63,23 +66,22 @@ abstract class AbstractFixture extends Fixture implements DependentFixtureInterf
         return static::$references[$fixture] ?? [];
     }
 
-    /** @noinspection PhpFullyQualifiedNameUsageInspection */
     protected function getNode(string $type): object
     {
         if (!InstalledVersions::isInstalled('whitedigital-eu/site-tree')) {
             throw new LogicException('SiteTree is missing. Try running "composer require whitedigital-eu/site-tree".');
         }
 
-        return $this->getReference('node' . $type . self::randomArrayKey(\WhiteDigital\SiteTree\DataFixture\SiteTreeFixture::$references[$type]));
+        return $this->getReference('node' . $type . self::randomArrayKey(SiteTreeFixture::$references[$type]), SiteTree::class);
     }
 
     protected function getImage(): object
     {
-        return $this->getReference('wdFile_image');
+        return $this->getReference('wdFile_image', StorageItem::class);
     }
 
     protected function getFile(): object
     {
-        return $this->getReference('wdFile_text');
+        return $this->getReference('wdFile_text', StorageItem::class);
     }
 }
